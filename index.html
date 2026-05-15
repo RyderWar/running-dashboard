@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Page setup -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Running Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="dashboard-card">
+      <!-- App header -->
+      <header class="app-header">
+        <div>
+          <h1>Running Dashboard</h1>
+          <p class="subtitle">Track your runs, mileage, and progress.</p>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
+      </header>
+
+      <div id="messageRegion" class="message-region" aria-live="polite"></div>
+
+      <!-- Weekly progress summary -->
+      <div class="stats-card">
+        <h2>Weekly Mileage</h2>
+        <p><span id="weeklyMileage">0</span> miles</p>
+
+        <div class="goal-info">
+          <p>Goal: <span id="weeklyGoal">50</span> miles</p>
+          <p><span id="goalPercent">0</span>% complete</p>
+        </div>
+
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Weekly statistics -->
+      <div class="weekly-stats-grid">
+        <div class="weekly-stat-card">
+          <h3>Runs This Week</h3>
+          <p id="runsThisWeek">No runs yet</p>
+        </div>
+
+        <div class="weekly-stat-card">
+          <h3>Average Pace</h3>
+          <p id="averagePace">No runs yet</p>
+        </div>
+
+        <div class="weekly-stat-card">
+          <h3>Longest Run</h3>
+          <p id="longestRun">No runs yet</p>
+        </div>
+
+        <div class="weekly-stat-card">
+          <h3>Total Weekly Time</h3>
+          <p id="weeklyTime">No runs yet</p>
+        </div>
+      </div>
+
+      <!-- Shoe mileage tracker -->
+      <section class="shoe-section">
+        <h2>Shoe Mileage Tracker</h2>
+
+        <form id="shoeForm" class="shoe-form">
+          <div class="form-group">
+            <label for="shoeName">Shoe Name</label>
+            <input type="text" id="shoeName" placeholder="Example: Nike Pegasus" />
+          </div>
+
+          <div class="form-group">
+            <label for="shoeStartingMileage">Starting Mileage</label>
+            <input type="number" id="shoeStartingMileage" step="any" min="0" placeholder="Example: 25" />
+          </div>
+
+          <button id="shoeSubmitButton" type="submit">Add Shoe</button>
+        </form>
+
+        <div id="shoesContainer" class="shoes-list">
+          <p class="empty-state">No shoes added yet. Add a shoe to start tracking mileage.</p>
+        </div>
+      </section>
+
+      <!-- Data backup and restore -->
+      <section class="data-section">
+        <h2>Backup Data</h2>
+
+        <div class="data-actions">
+          <button id="exportDataButton" type="button">Export Data</button>
+
+          <div class="form-group">
+            <label for="importDataInput">Import Data</label>
+            <input type="file" id="importDataInput" accept=".json,application/json" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Training charts -->
+      <section class="charts-section">
+        <h2>Training Charts</h2>
+
+        <p id="chartsEmptyState" class="empty-state">Charts will appear once you log runs.</p>
+
+        <div class="charts-grid" hidden>
+          <div class="chart-card">
+            <h3>Weekly Mileage Trend</h3>
+            <canvas id="weeklyMileageChart"></canvas>
+          </div>
+
+          <div class="chart-card">
+            <h3>Daily Mileage This Week</h3>
+            <canvas id="dailyMileageChart"></canvas>
+          </div>
+
+          <div class="chart-card">
+            <h3>Pace Trend</h3>
+            <canvas id="paceTrendChart"></canvas>
+          </div>
+
+          <div class="chart-card">
+            <h3>Run Type Distribution</h3>
+            <canvas id="runTypeChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Run entry form -->
+      <form id="runForm" class="run-form section-panel">
+        <div class="section-heading">
+          <h2>Log a Run</h2>
+        </div>
+
+        <div class="form-group">
+          <label for="runDate">Date</label>
+          <input type="date" id="runDate" />
+        </div>
+
+        <div class="form-group">
+          <label for="distance">Distance</label>
+          <input type="number" id="distance" step="any" placeholder="Example: 6.5" />
+        </div>
+
+        <div class="form-group">
+          <label for="time">Time</label>
+          <input type="text" id="time" placeholder="Example: 40:00" />
+        </div>
+
+        <div class="form-group">
+          <label for="runType">Run Type</label>
+          <select id="runType">
+            <option value="">Select a run type</option>
+            <option value="Easy Run">Easy Run</option>
+            <option value="Long Run">Long Run</option>
+            <option value="Workout">Workout</option>
+            <option value="Race">Race</option>
+            <option value="Recovery Run">Recovery Run</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="shoeSelect">Shoe</label>
+          <select id="shoeSelect">
+            <option value="">No shoe selected</option>
+          </select>
+        </div>
+
+        <div class="form-group notes-group">
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="How did the run feel?"></textarea>
+        </div>
+
+        <button id="runSubmitButton" type="submit" class="form-submit">Save Run</button>
+      </form>
+
+      <!-- Run filter -->
+      <div class="filter-section section-panel">
+        <div class="form-group">
+          <label for="searchRuns">Search Runs</label>
+          <input type="search" id="searchRuns" placeholder="Search notes or run type" />
+        </div>
+
+        <div class="form-group">
+          <label for="filterType">Filter Runs</label>
+          <select id="filterType">
+            <option value="All">All Runs</option>
+            <option value="Easy Run">Easy Run</option>
+            <option value="Long Run">Long Run</option>
+            <option value="Workout">Workout</option>
+            <option value="Race">Race</option>
+            <option value="Recovery Run">Recovery Run</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Saved run list -->
+      <section class="runs-section">
+        <h2>Saved Runs</h2>
+
+        <div id="runsContainer">
+          <p class="empty-state">No runs yet. Log your first run to start tracking.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="confirmModal" class="modal-backdrop" hidden>
+    <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+      <h2 id="confirmTitle">Confirm Action</h2>
+      <p id="confirmMessage">Are you sure?</p>
+
+      <div class="modal-actions">
+        <button id="confirmCancelButton" class="secondary-btn" type="button">Cancel</button>
+        <button id="confirmActionButton" class="delete-btn" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App logic -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
