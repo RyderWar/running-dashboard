@@ -13,6 +13,20 @@ A browser-based training dashboard built with HTML, CSS, and JavaScript.
 - Import/export data
 - Mobile responsive design
 
+## Screenshots
+
+### Light Mode
+![Light Mode](assets/screenshots/dashboard-light.png)
+
+### Dark Mode
+![Dark Mode](assets/screenshots/dashboard-dark.png)
+
+### Charts
+![Charts](assets/screenshots/charts.png)
+
+### Shoe Tracking
+![Shoe Tracking](assets/screenshots/shoe-tracker.png)
+
 ## Tech Stack
 
 - HTML
