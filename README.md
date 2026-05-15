@@ -51,3 +51,7 @@ A browser-based training dashboard built with HTML, CSS, and JavaScript.
 - Database integration
 - User accounts
 - More advanced analytics
+
+## Live Demo
+
+[View the live project](https://6a079ca542a1b30e925502cc--magnificent-praline-df2040.netlify.app)
