@@ -9,7 +9,9 @@ import {
   normalizeImportedShoes,
   saveRuns as persistRuns,
   saveShoes as persistShoes,
-  saveThemePreference
+  saveThemePreference,
+  loadWeeklyGoal,
+  saveWeeklyGoal
 } from "./storage.js";
 import {
   createShoeId,
@@ -63,7 +65,9 @@ const elements = {
   confirmTitle: document.getElementById("confirmTitle"),
   confirmMessage: document.getElementById("confirmMessage"),
   confirmCancelButton: document.getElementById("confirmCancelButton"),
-  confirmActionButton: document.getElementById("confirmActionButton")
+  confirmActionButton: document.getElementById("confirmActionButton"),
+  weeklyGoalForm: document.getElementById("weeklyGoalForm"),
+  weeklyGoalInput: document.getElementById("weeklyGoalInput")
 };
 
 let runs = loadRuns();
@@ -71,7 +75,7 @@ let shoes = loadShoes();
 let editingRunIndex = null;
 let editingShoeId = null;
 
-const WEEKLY_GOAL = 50;
+let weeklyGoal = loadWeeklyGoal();
 
 function setTheme(theme) {
   const nextTheme = normalizeTheme(theme);
@@ -341,11 +345,11 @@ function updateWeeklyStats() {
   const currentWeekRuns = getCurrentWeekRuns(runs);
   const currentWeekStats = getRunStats(currentWeekRuns);
 
-  const percentComplete = Math.round((currentWeekStats.totalMileage / WEEKLY_GOAL) * 100);
+  const percentComplete = Math.round((currentWeekStats.totalMileage / weeklyGoal) * 100);
   const cappedPercent = Math.min(percentComplete, 100);
 
   elements.weeklyMileage.textContent = currentWeekStats.totalMileage;
-  elements.weeklyGoal.textContent = WEEKLY_GOAL;
+  elements.weeklyGoal.textContent = weeklyGoal;
   elements.goalPercent.textContent = cappedPercent;
   elements.progressFill.style.width = cappedPercent + "%";
 
@@ -634,6 +638,34 @@ function handleShoeActionClick(event) {
   }
 }
 
+function handleWeeklyGoalSubmit(event){
+  event.preventDefault();
+
+  const goalValue = Number(elements.weeklyGoalInput.value);
+
+  if(Number.isNaN(goalValue) || goalValue <= 0){
+    showMessage(
+      "error",
+      "Invalid weekly goal.",
+      "Enter a number greater than 0."
+    );
+
+    return;
+  }
+
+  weeklyGoal = goalValue;
+
+  saveWeeklyGoal(weeklyGoal);
+
+  updateWeeklyStats();
+
+  showMessage(
+    "success",
+    "Weekly goal updated.",
+    `Your weekly goal is now ${weeklyGoal} miles.`
+  );
+}
+
 function bindEventListeners() {
   elements.shoeForm.addEventListener("submit", handleShoeSubmit);
   elements.runForm.addEventListener("submit", handleRunSubmit);
@@ -671,6 +703,13 @@ function bindEventListeners() {
       }
     });
   }
+
+  if (elements.weeklyGoalForm){
+    elements.weeklyGoalForm.addEventListener(
+      "submit",
+      handleWeeklyGoalSubmit
+    );
+  }
 }
 
 function initializeApp() {
@@ -678,6 +717,9 @@ function initializeApp() {
   setTheme(getPreferredTheme(loadThemePreference()));
   document.getElementById("runDate").valueAsDate = new Date();
   displayShoes();
+  if (elements.weeklyGoalInput){
+    elements.weeklyGoalInput.value = weeklyGoal;
+  }
   displayRuns();
 }
 

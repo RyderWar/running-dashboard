@@ -58,6 +58,23 @@ export function saveShoes(shoes) {
   saveStorageItem("shoes", shoes);
 }
 
+const WEEKLY_GOAL_STORAGE_KEY = "weeklyGoal";
+const DEFAULT_WEEKLY_GOAL = 50;
+
+export function loadWeeklyGoal(){
+  const savedGoal = Number(localStorage.getItem(WEEKLY_GOAL_STORAGE_KEY));
+
+  if (Number.isNaN(savedGoal) || savedGoal <= 0){
+    return DEFAULT_WEEKLY_GOAL;
+  }
+
+  return savedGoal;
+}
+
+export function saveWeeklyGoal(goal){
+    localStorage.setItem(WEEKLY_GOAL_STORAGE_KEY, String(goal));
+}
+
 export function loadThemePreference() {
   return localStorage.getItem(THEME_STORAGE_KEY);
 }
